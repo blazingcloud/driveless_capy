@@ -12,12 +12,16 @@ sauce_key = ENV["SAUCE_KEY"]
 if sauce_user && sauce_key
   require 'sauce'
   require 'sauce/capybara'
-  Sauce.config do |conf|
-    conf.username = sauce_user
-    conf.access_key = sauce_key
-    conf.browsers = [
+  Sauce.config do |c|
+    c.browser_url = "http://my.drivelesschallenge.com"
+    c.username = sauce_user
+    c.access_key = sauce_key
+    c.browsers = [
+        #["Windows 2003", "firefox", "3.6."],
         ["Linux", "firefox", "3.6."]
     ]
+    #c.application_host = "my.drivelesschallenge.com"
+    #c.application_port = "80"
   end
 
   Capybara.default_driver = :sauce
@@ -51,10 +55,18 @@ describe "Drive Less Challenge" do
   end
 
   def browser
-    Capybara.current_session.driver.browser
+    driver.browser
+  end
+
+  def driver
+    Capybara.current_session.driver
   end
 
   describe "Login" do
+    before do
+      Capybara.reset_sessions!
+    end
+
     describe "When the user has not yet logged in to either the Web site or Facebook and goes to the front page" do
       before do
         visit 'http://my.drivelesschallenge.com/'
@@ -81,7 +93,7 @@ describe "Drive Less Challenge" do
 
       describe "and she clicks on te Facebook button" do
         before do
-          @app_window = current_window
+          #@app_window = current_window
 
           fb_connect = Capybara.current_session.driver.browser.find_element(:id, 'RES_ID_fb_login_image')
           fb_connect.click
@@ -95,22 +107,20 @@ describe "Drive Less Challenge" do
 
         describe "and she enters her Facebook login information" do
           before do
-            #handle = find_window( "Login | Facebook" )
-            #browser.switch_to.window(handle, &blk)
+            #handle = driver.find_window( "Login | Facebook" )
+            #browser.switch_to.window(handle)
             within_window("Login | Facebook") do
               page.should have_content("Log in to use your Facebook account with Drive Less Challenge.")
               fill_in "Email:", :with => "jenmei@blazingcloud.net"
               fill_in "Password:", :with => "webrat"
               find('input[name=login]').click
-              #true
             end
-            sleep 2
             #browser.switch_to.window(@app_window)
-            #fb_connect = Capybara.current_session.driver.browser.find_element(:id, 'RES_ID_fb_login_image')
-            #fb_connect.click
           end
 
           she "she should be shown her My Trips page" do
+            #sleep 2
+            page.driver.browser.save_screenshot('file.png')
             save_and_open_page
             page.find('div.navigation ol li.current').should have_content("My Trips")
           end
