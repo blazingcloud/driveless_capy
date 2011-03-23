@@ -1,9 +1,8 @@
 source :rubygems
 
 gem 'rspec', '~>2.5.0'
-gem 'capybara', :path => "/Users/jenmei/workspace/gems/capybara"
-gem 'ruby-debug19', '~>0.11.6'
+gem 'capybara', :git => 'git@github.com:jenmei/capybara.git', :branch => 'tmp'
+gem 'ruby-debug', '~>0.10.4'
 gem 'sauce', '~>0.17.8'
-gem 'capybara-firebug', :path => "/Users/jenmei/workspace/gems/capybara-firebug"
-gem 'pivotal_git_scripts', '~>1.1.0'
-gem 'launchy', '~>0.4.0'
+gem 'capybara-firebug', :git => 'git@github.com:blazingcloud/capybara-firebug.git'
+#gem 'launchy', '~>0.4.0'
