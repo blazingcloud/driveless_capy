@@ -95,20 +95,23 @@ describe "Drive Less Challenge" do
 
         describe "and she enters her Facebook login information" do
           before do
+            #handle = find_window( "Login | Facebook" )
+            #browser.switch_to.window(handle, &blk)
             within_window("Login | Facebook") do
               page.should have_content("Log in to use your Facebook account with Drive Less Challenge.")
               fill_in "Email:", :with => "jenmei@blazingcloud.net"
               fill_in "Password:", :with => "webrat"
               find('input[name=login]').click
+              #true
             end
-            browser.switch_to.window(@app_window)
-            debugger
-            fb_connect = Capybara.current_session.driver.browser.find_element(:id, 'RES_ID_fb_login_image')
-            fb_connect.click
+            sleep 2
+            #browser.switch_to.window(@app_window)
+            #fb_connect = Capybara.current_session.driver.browser.find_element(:id, 'RES_ID_fb_login_image')
+            #fb_connect.click
           end
 
           she "she should be shown her My Trips page" do
-            current_path.should == "/account"
+            save_and_open_page
             page.find('div.navigation ol li.current').should have_content("My Trips")
           end
         end
