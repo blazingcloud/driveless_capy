@@ -6,28 +6,36 @@ require 'selenium-webdriver'
 require 'ruby-debug'
 require 'capybara/firebug'
 
-sauce_user = ENV["SAUCE_USER"]
-sauce_key = ENV["SAUCE_KEY"]
+sauce_user = ENV["SAUCE_USERNAME"]
+sauce_key = ENV["SAUCE_ACCESS_KEY"]
 
 if sauce_user && sauce_key
   require 'sauce'
   require 'sauce/capybara'
   Sauce.config do |c|
-    c.browser_url = "http://my.drivelesschallenge.com"
-    c.username = sauce_user
-    c.access_key = sauce_key
+    #c.browser_url = "http://my.drivelesschallenge.com"
+    # If you use the above env vars you don't need these lines
+    #c.username = sauce_user
+    #c.access_key = sauce_key
     c.browsers = [
         #["Windows 2003", "firefox", "3.6."],
-        ["Linux", "firefox", "3.6."]
+        #["Windows 2003", "googlechrome", ""],
+        #["Windows 2003", "safari", "4."],
+        #["Windows 2003", "opera", "11."],
+        #["Windows 2003", "firefox", "3.6."],
+        #["Windows 2003", "firefox", "3.6."],
+        ["Windows 2008", "iexplore", "9."],
+        #["Windows 2008", "firefox", "4."],
+        #["Linux", "firefox", "3.6."]
     ]
+  end
+  # Only if using tunnel
     #c.application_host = "my.drivelesschallenge.com"
     #c.application_port = "80"
-  end
 
   Capybara.default_driver = :sauce
 else
   Capybara.default_driver = :selenium #_with_firebug
-  Selenium::WebDriver::Firefox::Binary.path = "/Applications/Firefox 3.6.app/Contents/MacOS/firefox-bin"
 end
 
 Capybara.app_host = "my.drivelesschallenge.com"
@@ -63,10 +71,6 @@ describe "Drive Less Challenge" do
   end
 
   describe "Login" do
-    before do
-      Capybara.reset_sessions!
-    end
-
     describe "When the user has not yet logged in to either the Web site or Facebook and goes to the front page" do
       before do
         visit 'http://my.drivelesschallenge.com/'
@@ -125,9 +129,8 @@ describe "Drive Less Challenge" do
           end
 
           she "she should be shown her My Trips page" do
-            #sleep 2
             page.driver.browser.save_screenshot('file.png')
-            save_and_open_page
+            save_page
             page.find('div.navigation ol li.current').should have_content("My Trips")
           end
         end
